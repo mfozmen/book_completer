@@ -3,7 +3,9 @@ import {
 } from 'node-dependency-injection'
 import fileReader from './utils/fileReader';
 import csvReader from './utils/csvReader';
-
+import scraperFactory from './utils/scraperFactory';
+import drScraper from './utils/drScraper';
+import idefixScraper from './utils/idefixScraper';
 var program = require('commander');
 
 program
@@ -17,23 +19,34 @@ try {
     if (!program.inputfile)
         throw new Error("You have to specify a CSV file to read books.");
 
-    let container = new ContainerBuilder()
+        let container = new ContainerBuilder()
 
-    container
-        .register('service.fileReader', fileReader)
-        .addArgument(csvReader)
+        container
+            .register('fileReader', fileReader)
+            .addArgument(csvReader)
+    
+        const reader = container.get('fileReader')._readerService;
 
-    const reader = container.get('service.fileReader')._readerService;
-
-    reader.readAsync(program.inputfile, program.limit, program.offset)
-        .then(json => {
-            console.log(json);
-        })
-        .catch(e => {
-            throw e;
-        });
+        var sf = createScraperFactory();
+        var s = sf.get();
+      
+    
+        reader.readAsync(program.inputfile, program.limit, program.offset)
+            .then(books => {
+            })
+            .catch(e => {
+                throw e;
+            });
 
 } catch (error) {
     console.error(error);
     process.exit(1);
+}
+
+function createScraperFactory(){
+    var sf = new scraperFactory();
+    sf.register(drScraper);
+    sf.register(idefixScraper);
+
+    return sf;
 }
