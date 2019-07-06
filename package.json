@@ -1,0 +1,23 @@
+{
+  "name": "book_completer",
+  "version": "1.0.0",
+  "description": "\"# book_completer\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfozmen/book_completer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mfozmen/book_completer/issues"
+  },
+  "homepage": "https://github.com/mfozmen/book_completer#readme",
+  "dependencies": {
+    "commander": "^2.20.0"
+  }
+}
