@@ -19,31 +19,35 @@ try {
     if (!program.inputfile)
         throw new Error("You have to specify a CSV file to read books.");
 
-        let container = new ContainerBuilder()
+    var fReader = getFileReader();
+    var scrapFac = createScraperFactory();
 
-        container
-            .register('fileReader', fileReader)
-            .addArgument(csvReader)
-    
-        const reader = container.get('fileReader')._readerService;
-
-        var sf = createScraperFactory();
-        var s = sf.get();
-      
-    
-        reader.readAsync(program.inputfile, program.limit, program.offset)
-            .then(books => {
-            })
-            .catch(e => {
-                throw e;
-            });
-
+    fReader.readLineAsync(function(r){
+        r.then(book=> {
+            var scraper = scrapFac.get(book);
+            return scraper.completeBookAsync();
+        })
+        .then(book=>{
+            console.log(book);
+        })
+        .catch(e=> {throw e;});
+    })
 } catch (error) {
     console.error(error);
     process.exit(1);
 }
 
-function createScraperFactory(){
+function getFileReader() {
+    let container = new ContainerBuilder()
+
+    container
+        .register('fileReader', fileReader)
+        .addArgument(new csvReader(program.inputfile, program.limit, program.offset))
+
+    return container.get('fileReader')._readerService;
+}
+
+function createScraperFactory() {
     var sf = new scraperFactory();
     sf.register(drScraper);
     sf.register(idefixScraper);

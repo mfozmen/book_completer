@@ -7,9 +7,9 @@ class scraperFactory{
         this.scrapers.push(scraper);
     }
 
-    get(){
+    get(book){
         var scraper = this.scrapers[Math.floor(Math.random() * this.scrapers.length)];
-        return new scraper();
+        return new scraper(book);
     }
 }
 
