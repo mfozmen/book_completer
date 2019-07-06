@@ -2,12 +2,12 @@ import csv from 'csvtojson';
 
  class csvReader {
     constructor(){
-        // super();
+        
     }
 
     static readAsync(file, limit, offset) {
         return csv({
-            delimeter: [';']
+            delimiter: [';']
         }).fromFile(file);
     };
 }
