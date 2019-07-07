@@ -2,6 +2,7 @@ import request from 'request';
 import {
     parse
 } from 'node-html-parser';
+import logger from './logger';
 const download = require('image-downloader')
 const uuidv1 = require('uuid/v1');
 var fs = require('fs');
@@ -24,7 +25,7 @@ class scraper {
                     if (detailsUrl)
                         return this.getDetailsPageAsync(detailsUrl);
                     else {
-                        console.error(`The book ${JSON.stringify(this.book)} is not found.`);
+                        logger.error(`The book ${JSON.stringify(this.book)} is not found.`)
                         return null;
                     }
                 })
@@ -91,7 +92,7 @@ class scraper {
                     parsedBook.image = fileName;
                     return parsedBook;
                 })
-                .catch(() => console.error(`Unable to download image for (${JSON.stringify(this.book)}) from D&R`))
+                .catch(() => logger.error(`Unable to download image for (${JSON.stringify(this.book)})`))
                 .then(() => resolve(parsedBook));
         }.bind(this));
     }
@@ -120,7 +121,7 @@ class scraper {
             const prop = Object.keys(this.book)[i];
             if (book[prop] !== this.book[prop]) {
                 if (prop === 'isbn13' && this.book.isbn13 && book.isbn13) {
-                    console.log(`The book "${this.book.title}" has invalid ISBN13. It's updating. Old Value: ${this.book.isbn13}, New Value: ${book.isbn13}`);
+                    logger.info(`The book "${this.book.title}" has invalid ISBN13. It's updating. Old Value: ${this.book.isbn13}, New Value: ${book.isbn13}`);
                 }
                 this.book[prop] = book[prop];
             }

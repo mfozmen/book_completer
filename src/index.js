@@ -8,6 +8,7 @@ import csvWriter from './utils/csvWriter';
 import scraperFactory from './utils/scraperFactory';
 import drScraper from './utils/drScraper';
 import idefixScraper from './utils/idefixScraper';
+import logger from 'log4js';
 const program = require('commander');
 
 program
@@ -37,7 +38,6 @@ try {
                     var scraper = scrapFac.get(book);
                     promises.push(scraper.completeBookAsync()
                         .then(book => {
-                            console.log(book);
                             fWriter.append(book);
                         })
                         .catch(e => {
@@ -59,7 +59,7 @@ try {
             throw e;
         })
 } catch (error) {
-    console.error(error);
+    logger.error(error);
     process.exit(1);
 }
 
