@@ -32,14 +32,14 @@ class csvWriter {
 
     writeToFileAsync() {
         return new Promise(function (resolve, reject) {
-            if (this.ensureDirectoryExistence(this.file)) {
-                fs.writeFile(this.file, this.csv, function (err) {
-                    if (err)
-                        reject(err);
-                    else
-                        resolve(true);
-                });
-            }
+            this.ensureDirectoryExistence(this.file);
+            fs.writeFile(this.file, this.csv, function (err) {
+                if (err)
+                    reject(err);
+                else
+                    resolve(true);
+            });
+
         }.bind(this));
     }
 
@@ -48,7 +48,7 @@ class csvWriter {
         if (fs.existsSync(dirname)) {
             return true;
         }
-        ensureDirectoryExistence(dirname);
+        this.ensureDirectoryExistence(dirname);
         fs.mkdirSync(dirname);
     }
 }

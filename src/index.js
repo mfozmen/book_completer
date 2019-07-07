@@ -37,6 +37,7 @@ try {
                     var scraper = scrapFac.get(book);
                     promises.push(scraper.completeBookAsync()
                         .then(book => {
+                            console.log(book);
                             fWriter.append(book);
                         }));
                 }
@@ -83,7 +84,6 @@ function createScraperFactory() {
     var sf = new scraperFactory();
     sf.register(drScraper);
     sf.register(idefixScraper);
-
     return sf;
 }
 

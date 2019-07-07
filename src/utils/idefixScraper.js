@@ -27,11 +27,14 @@ class idefixScraper extends scraper {
 
     extractTitle(root) {
         var trTitle = root.querySelector('.prodyctDetailTopTitle h1').text;
+        trTitle = trTitle.clean();
         return trTitle.convertTrToEn();
     }
 
     extractAuthors(root) {
-        return root.querySelector('.author-text').text;
+        var trAuthors = root.querySelector('.author-text').text;
+        trAuthors = trAuthors.clean();
+        return trAuthors.convertTrToEn();
     }
 
     extractPrice(root) {

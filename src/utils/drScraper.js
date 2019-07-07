@@ -28,11 +28,14 @@ class drScraper extends scraper {
 
     extractTitle(root) {
         var trTitle = root.querySelector('.product-name').text;
+        trTitle = trTitle.clean();
         return trTitle.convertTrToEn();
     }
 
     extractAuthors(root) {
-        return root.querySelector('.author span').text;
+        var trAuthors = root.querySelector('.author span').text;
+        trAuthors = trAuthors.clean();
+        return trAuthors.convertTrToEn();
     }
 
     extractPrice(root) {
@@ -51,7 +54,7 @@ class drScraper extends scraper {
     extractImageAsync(root) {
         var img = root.querySelector('#main-product-img');
         if (img)
-            return super.downloadImageAsync(img.attributes['src'],`${super.generateGuid()}.jpg`);
+            return super.downloadImageAsync(img.attributes['src'], `${super.generateGuid()}.jpg`);
         else
             return Promise.resolve(null);
     }

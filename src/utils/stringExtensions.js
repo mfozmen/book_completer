@@ -24,3 +24,9 @@ Object.defineProperty(String.prototype, 'convertTrToEn', {
         return result.join('');
     }
 });
+
+Object.defineProperty(String.prototype, 'clean', {
+    value() {
+        return this.replace(/\r\n/g, '').trim();
+    }
+});
