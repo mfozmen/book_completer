@@ -23,6 +23,7 @@
     "csvtojson": "^2.0.10",
     "image-downloader": "^3.4.2",
     "json2csv": "^4.5.2",
+    "log4js": "^4.4.0",
     "node-dependency-injection": "^2.3.5",
     "node-html-parser": "^1.1.16",
     "request": "^2.88.0",
