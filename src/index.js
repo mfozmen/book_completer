@@ -31,16 +31,16 @@ try {
                     promises.push(Promise.resolve(book));
                 else if (book.title || book.isbn13) {
                     var scraper = scrapFac.get(book);
-                    promises.push(scraper.completeBookAsync());
+                    promises.push(scraper.completeBookAsync()
+                    .then(book => {
+                        console.log(book);
+                    }));
                 }
             }
             return reportProgress(promises,
                 (percent, completedRecords, totalRecords) => {
                     console.log(`${completedRecords}/${totalRecords} %${percent.toFixed(2)} completed...`);
                 });
-        })
-        .then(resultset => {
-            console.log(resultset);
         })
         .catch(e => {
             throw e;

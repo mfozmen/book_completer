@@ -25,16 +25,6 @@ class idefixScraper extends scraper {
             throw new Error(`Unable to parse details url for the book ${JSON.stringify(this.book)}`);
     }
 
-    parseBook(detailsPage) {
-        var root = parse(detailsPage);
-        return {
-            title: this.extractTitle(root),
-            authors: this.extractAuthors(root),
-            price: this.extractPrice(root),
-            isbn13: this.extractISBN13(root)
-        }
-    }
-
     extractTitle(root) {
         var trTitle = root.querySelector('.prodyctDetailTopTitle h1').text;
         return trTitle.convertTrToEn();
@@ -59,6 +49,14 @@ class idefixScraper extends scraper {
             return m[0];
         else
             return '';
+    }
+
+    extractImageAsync(root) {
+        var img = root.querySelector('#main-product-img');
+        if (img)
+            return super.downloadImageAsync(img.attributes['data-src'], `${super.generateGuid()}.jpg`);
+        else
+            return Promise.resolve(null);
     }
 }
 

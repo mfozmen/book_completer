@@ -26,16 +26,6 @@ class drScraper extends scraper {
             throw new Error(`Unable to parse details url for the book ${JSON.stringify(this.book)}`);
     }
 
-    parseBook(detailsPage) {
-        var root = parse(detailsPage);
-        return {
-            title: this.extractTitle(root),
-            authors: this.extractAuthors(root),
-            price: this.extractPrice(root),
-            isbn13: this.extractISBN13(root)
-        }
-    }
-
     extractTitle(root) {
         var trTitle = root.querySelector('.product-name').text;
         return trTitle.convertTrToEn();
@@ -56,6 +46,14 @@ class drScraper extends scraper {
             return m[0];
         else
             return '';
+    }
+
+    extractImageAsync(root) {
+        var img = root.querySelector('#main-product-img');
+        if (img)
+            return super.downloadImageAsync(img.attributes['src'],`${super.generateGuid()}.jpg`);
+        else
+            return Promise.resolve(null);
     }
 }
 
