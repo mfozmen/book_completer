@@ -14,13 +14,16 @@ class drScraper extends scraper {
     parseDetailsUrl(body) {
         var detailsUrl;
         const root = parse(body);
-        var firstListCell = root.querySelector('.list-cell');
-        if (firstListCell)
-            detailsUrl = `${this.siteUrl}${firstListCell.querySelector('.item-name').attributes.href}`;
+        var listCell = root.querySelector('.list-cell');
+        if (listCell)
+            detailsUrl = `${this.siteUrl}${listCell.querySelector('.item-name').attributes.href}`;
+        else
+            throw new Error(`Unable to find the book (${JSON.stringify(this.book)}) on D&R`);
+
         if (detailsUrl)
             return detailsUrl;
         else
-            throw new Error('Unable to parse details url');
+            throw new Error(`Unable to parse details url for the book ${JSON.stringify(this.book)}`);
     }
 
     parseBook(detailsPage) {
@@ -46,12 +49,12 @@ class drScraper extends scraper {
         return root.querySelector('.product-price').text;
     }
 
-    extractISBN13(root){
+    extractISBN13(root) {
         var preword = 'Barkod: ';
         var text = root.querySelector('.pluses').text;
         var index = text.search(preword);
-        var startIndex = index+preword.length;
-        var endIndex = startIndex+13;
+        var startIndex = index + preword.length;
+        var endIndex = startIndex + 13;
         return text.slice(startIndex, endIndex);
     }
 }

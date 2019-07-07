@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}\\lib\\index.js",
-            "args": ["-i","input/books.csv"]
+            "args": ["-i","input/books.csv", "-l","10","-o","0"]
         }
     ]
 }

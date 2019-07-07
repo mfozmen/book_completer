@@ -1,5 +1,4 @@
 import request from 'request';
-
 class scraper {
     constructor(book) {
         this.requestTimeout = 60000;
@@ -16,6 +15,7 @@ class scraper {
                 .then(detailsPage => this.parseBook(detailsPage))
                 .then(book => {
                     this.copyProperties(book);
+                    resolve(book);
                 })
                 .catch(e => reject(e));
         }.bind(this));
@@ -26,18 +26,17 @@ class scraper {
             var uri;
             if (this.book.title)
                 uri = encodeURI(`${this.searchUrl}${this.book.title}`);
+            else if (this.book.isbn13)
+                uri = encodeURI(`${this.searchUrl}${this.book.isbn13}`);
 
-            if (uri) {
-                request(uri, {
-                    timeout: this.requestTimeout
-                }, (err, _response, body) => {
-                    if (err)
-                        reject(err);
-                    else
-                        resolve(body);
-                });
-            } else
-                reject('No Uri');
+            request(uri, {
+                timeout: this.requestTimeout
+            }, (err, _response, body) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(body);
+            });
         }.bind(this));
     }
 
@@ -60,7 +59,7 @@ class scraper {
             if (book[prop] !== this.book[prop])
                 this.book[prop] = book[prop];
         }
-        this.book.imagePath = book.imagePath;
+        this.book.image = book.image;
     }
 }
 

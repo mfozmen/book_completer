@@ -1,37 +1,24 @@
 import csv from 'csvtojson';
 
 class csvReader {
-    constructor(file, limit, offset) {
+    constructor(file, limit, offset = 0) {
         this.file = file;
-        if (offset) {
-            this.start = offset;
-            if (limit)
-                this.end = limit + offset;
-        }
+        this.limit = limit;
+        this.offset = offset;
     }
 
-    readLineAsync(next) {
-        var opts = this.createOptions();
-        csv({
+    readAsync() {
+        return csv({
                 delimiter: [';']
             })
-            .fromFile(this.file, opts)
-            .subscribe((data) => {
-                if (data)
-                    next(new Promise((resolve) => {
-                        resolve(data);
-                    }));
-            })
-    }
-
-    createOptions() {
-        var options = {};
-        if (this.start)
-            options.start = this.start;
-        if (this.end)
-            options.end = this.end;
-
-        return options;
+            .fromFile(this.file)
+            .then(data => {
+                var start = this.offset;
+                var end = data.length;
+                if (this.limit)
+                    end = this.limit + this.offset;
+                return data.slice(start, end);
+            });
     }
 }
 

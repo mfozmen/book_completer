@@ -22,16 +22,30 @@ try {
     var fReader = getFileReader();
     var scrapFac = createScraperFactory();
 
-    fReader.readLineAsync(function(r){
-        r.then(book=> {
-            var scraper = scrapFac.get(book);
-            return scraper.completeBookAsync();
+    fReader.readAsync()
+        .then(books => {
+            var promises = [];
+            for (let i = 0; i < books.length; i++) {
+                const book = books[i];
+                if (book.title && book.authors && book.price && book.isbn13 && book.image)
+                    promises.push(Promise.resolve(book));
+                else if (book.title || book.isbn13) {
+                    var scraper = scrapFac.get(book);
+                    promises.push(scraper.completeBookAsync());
+                }
+            }
+            return reportProgress(promises,
+                (p) => {
+                    console.log(`%${p.toFixed(2)} completed...`);
+                });
         })
-        .then(book=>{
-            console.log(book);
+        .then(resultset => {
+            console.log(resultset);
         })
-        .catch(e=> {throw e;});
-    })
+        .catch(e => {
+            throw e;
+        });
+
 } catch (error) {
     console.error(error);
     process.exit(1);
@@ -53,4 +67,22 @@ function createScraperFactory() {
     // sf.register(idefixScraper);
 
     return sf;
+}
+
+function reportProgress(promises, progress) {
+    let d = 0;
+
+    if (promises.length === 0)
+        progress(100);
+    else {
+        progress(0);
+        for (const p of promises) {
+            p.finally(() => {
+                d++;
+                progress((d * 100) / promises.length);
+            });
+        }
+    }
+
+    return Promise.all(promises);
 }
