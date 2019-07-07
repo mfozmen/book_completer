@@ -103,8 +103,12 @@ class scraper {
     copyProperties(book) {
         for (let i = 0; i < Object.keys(this.book).length; i++) {
             const prop = Object.keys(this.book)[i];
-            if (book[prop] !== this.book[prop])
+            if (book[prop] !== this.book[prop]){
+                if (prop === 'isbn13' && this.book.isbn13 && book.isbn13){
+                    console.log(`The book "${this.book.title}" has invalid ISBN13. It's updating. Old Value: ${this.book.isbn13}, New Value: ${book.isbn13}`);
+                }
                 this.book[prop] = book[prop];
+            }
         }
         this.book.image = book.image;
     }
