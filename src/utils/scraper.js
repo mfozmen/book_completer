@@ -2,6 +2,7 @@ import request from 'request';
 class scraper {
     constructor(book) {
         this.requestTimeout = 60000;
+        this.regexISBN13 = /([0-9]){13}/;
         this.book = book;
         this.siteUrl = '';
         this.searchUrl = '';
