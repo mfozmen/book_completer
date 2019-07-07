@@ -20,11 +20,26 @@ class scraper {
         return new Promise(function (resolve, reject) {
             this.searchAsync()
                 .then(body => this.parseDetailsUrl(body))
-                .then(detailsUrl => this.getDetailsPageAsync(detailsUrl))
-                .then(detailsPage => this.parseBookAsync(detailsPage))
+                .then(detailsUrl => {
+                    if (detailsUrl)
+                        return this.getDetailsPageAsync(detailsUrl);
+                    else {
+                        console.error(`The book ${JSON.stringify(this.book)} is not found.`);
+                        return null;
+                    }
+                })
+                .then(detailsPage => {
+                    if (detailsPage)
+                        return this.parseBookAsync(detailsPage);
+                    else
+                        return null;
+                })
                 .then(book => {
-                    this.copyProperties(book);
-                    resolve(book);
+                    if (book) {
+                        this.copyProperties(book);
+                        resolve(book);
+                    } else
+                        resolve(this.book);
                 })
                 .catch(e => reject(e));
         }.bind(this));
@@ -103,8 +118,8 @@ class scraper {
     copyProperties(book) {
         for (let i = 0; i < Object.keys(this.book).length; i++) {
             const prop = Object.keys(this.book)[i];
-            if (book[prop] !== this.book[prop]){
-                if (prop === 'isbn13' && this.book.isbn13 && book.isbn13){
+            if (book[prop] !== this.book[prop]) {
+                if (prop === 'isbn13' && this.book.isbn13 && book.isbn13) {
                     console.log(`The book "${this.book.title}" has invalid ISBN13. It's updating. Old Value: ${this.book.isbn13}, New Value: ${book.isbn13}`);
                 }
                 this.book[prop] = book[prop];

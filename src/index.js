@@ -39,6 +39,9 @@ try {
                         .then(book => {
                             console.log(book);
                             fWriter.append(book);
+                        })
+                        .catch(e => {
+                            throw e;
                         }));
                 }
             }

@@ -15,15 +15,9 @@ class drScraper extends scraper {
         var detailsUrl;
         const root = parse(body);
         var listCell = root.querySelector('.list-cell');
-        if (listCell)
+        if (listCell) 
             detailsUrl = `${this.siteUrl}${listCell.querySelector('.item-name').attributes.href}`;
-        else
-            throw new Error(`Unable to find the book (${JSON.stringify(this.book)}) on D&R`);
-
-        if (detailsUrl)
-            return detailsUrl;
-        else
-            throw new Error(`Unable to parse details url for the book ${JSON.stringify(this.book)}`);
+        return detailsUrl;
     }
 
     extractTitle(root) {

@@ -16,13 +16,7 @@ class idefixScraper extends scraper {
         var productImage = root.querySelector('.product-image');
         if (productImage)
             detailsUrl = `${this.siteUrl}${productImage.attributes.href}`;
-        else
-            throw new Error(`Unable to find the book (${JSON.stringify(this.book)}) on Idefix`);
-
-        if (detailsUrl)
-            return detailsUrl;
-        else
-            throw new Error(`Unable to parse details url for the book ${JSON.stringify(this.book)}`);
+        return detailsUrl;
     }
 
     extractTitle(root) {
