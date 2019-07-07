@@ -15,34 +15,47 @@ class drScraper extends scraper {
         var detailsUrl;
         const root = parse(body);
         var listCell = root.querySelector('.list-cell');
-        if (listCell) 
+        if (listCell)
             detailsUrl = `${this.siteUrl}${listCell.querySelector('.item-name').attributes.href}`;
         return detailsUrl;
     }
 
     extractTitle(root) {
-        var trTitle = root.querySelector('.product-name').text;
-        trTitle = trTitle.clean();
-        return trTitle.convertTrToEn();
+        var root = root.querySelector('.product-name');
+        if (root) {
+            var trTitle = root.text;
+            trTitle = trTitle.clean();
+            return trTitle.convertTrToEn();
+        }
+        return null;
     }
 
     extractAuthors(root) {
-        var trAuthors = root.querySelector('.author span').text;
-        trAuthors = trAuthors.clean();
-        return trAuthors.convertTrToEn();
+        var root = root.querySelector('.author span');
+        if (root) {
+            var trAuthors = root.text;
+            trAuthors = trAuthors.clean();
+            return trAuthors.convertTrToEn();
+        }
+        return null;
     }
 
     extractPrice(root) {
-        return root.querySelector('.product-price').text;
+        var root = root.querySelector('.product-price');
+        if (root)
+            return root.text;
+        return null;
     }
 
     extractISBN13(root) {
-        var text = root.querySelector('.pluses').text;
-        var m = text.match(this.regexISBN13);
-        if (m)
-            return m[0];
-        else
-            return '';
+        var root = root.querySelector('.pluses');
+        if (root) {
+            var text = root.text;
+            var m = text.match(this.regexISBN13);
+            if (m)
+                return m[0];
+        }
+        return null;
     }
 
     extractImageAsync(root) {

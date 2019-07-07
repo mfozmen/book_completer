@@ -20,32 +20,46 @@ class idefixScraper extends scraper {
     }
 
     extractTitle(root) {
-        var trTitle = root.querySelector('.prodyctDetailTopTitle h1').text;
-        trTitle = trTitle.clean();
-        return trTitle.convertTrToEn();
+        var root = root.querySelector('.prodyctDetailTopTitle h1');
+        if (root) {
+            var trTitle = root.text;
+            trTitle = trTitle.clean();
+            return trTitle.convertTrToEn();
+        }
+        return null;
     }
 
     extractAuthors(root) {
-        var trAuthors = root.querySelector('.author-text').text;
-        trAuthors = trAuthors.clean();
-        return trAuthors.convertTrToEn();
+        var root = root.querySelector('.author-text');
+        if (root) {
+            var trAuthors = root.text;
+            trAuthors = trAuthors.clean();
+            return trAuthors.convertTrToEn();
+        }
+        return null;
     }
 
     extractPrice(root) {
-        return root.querySelector('#salePrice').text;
+        var root = root.querySelector('#salePrice');
+        if (root)
+            return root.text;
+        else
+            return null;
     }
 
     extractISBN13(root) {
-        var ulText = root.querySelector('.product-info-list ul').childNodes.map(n => {
-            return n.text;
-        }).reduce(function (a, b) {
-            return a.concat(b);
-        });
-        var m = ulText.match(this.regexISBN13);
-        if (m)
-            return m[0];
-        else
-            return '';
+        var root = root.querySelector('.product-info-list ul');
+        if (root) {
+            var ulText = root.childNodes.map(n => {
+                return n.text;
+            }).reduce(function (a, b) {
+                return a.concat(b);
+            });
+            var m = ulText.match(this.regexISBN13);
+            if (m)
+                return m[0];
+        }
+        return null;
     }
 
     extractImageAsync(root) {
