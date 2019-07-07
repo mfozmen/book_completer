@@ -18,9 +18,13 @@ class scraper {
     }
 
     completeBookAsync() {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve) {
             this.searchAsync()
-                .then(body => this.parseDetailsUrl(body))
+                .then(body => {
+                    if (body)
+                        return this.parseDetailsUrl(body);
+                    else return null;
+                })
                 .then(detailsUrl => {
                     if (detailsUrl)
                         return this.getDetailsPageAsync(detailsUrl);
@@ -42,12 +46,15 @@ class scraper {
                     } else
                         resolve(this.book);
                 })
-                .catch(e => reject(e));
+                .catch(e => {
+                    logger.error(e);
+                    resolve(this.book)
+                });
         }.bind(this));
     }
 
     searchAsync() {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve) {
             var uri;
             if (this.book.title)
                 uri = encodeURI(`${this.searchUrl}${this.book.title}`);
@@ -58,7 +65,7 @@ class scraper {
                 timeout: this.requestTimeout
             }, (err, _response, body) => {
                 if (err)
-                    reject(err);
+                    resolve(null);
                 else
                     resolve(body);
             });
@@ -93,7 +100,7 @@ class scraper {
                     return parsedBook;
                 })
                 .catch(() => logger.error(`Unable to download image for (${JSON.stringify(this.book)})`))
-                .then(() => resolve(parsedBook));
+                .finally(() => resolve(parsedBook));
         }.bind(this));
     }
 

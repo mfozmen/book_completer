@@ -8,6 +8,6 @@
         "request": "launch",
         "name": "Launch Program",
         "program": "${workspaceFolder}\\lib\\index.js",
-        "args": ["-i", "input/books.csv", "-l", "10", "-o", "0", "-f", "output/books.csv"]
+        "args": ["-i", "input/books.csv", "-l", "50", "-o", "0", "-f", "output/books.csv"]
     }]
 }

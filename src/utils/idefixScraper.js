@@ -2,6 +2,7 @@ import scraper from "./scraper";
 import {
     parse
 } from 'node-html-parser';
+import stringExtensions from "./stringExtensions";
 
 class idefixScraper extends scraper {
     constructor(book) {
@@ -42,7 +43,7 @@ class idefixScraper extends scraper {
     extractPrice(root) {
         var root = root.querySelector('#salePrice');
         if (root)
-            return root.text;
+            return root.text.clean();
         else
             return null;
     }

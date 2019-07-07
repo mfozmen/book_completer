@@ -43,7 +43,7 @@ class drScraper extends scraper {
     extractPrice(root) {
         var root = root.querySelector('.product-price');
         if (root)
-            return root.text;
+            return root.text.clean();
         return null;
     }
 
