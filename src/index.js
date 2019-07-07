@@ -35,8 +35,8 @@ try {
                 }
             }
             return reportProgress(promises,
-                (p) => {
-                    console.log(`%${p.toFixed(2)} completed...`);
+                (percent, completedRecords, totalRecords) => {
+                    console.log(`${completedRecords}/${totalRecords} %${percent.toFixed(2)} completed...`);
                 });
         })
         .then(resultset => {
@@ -73,13 +73,13 @@ function reportProgress(promises, progress) {
     let d = 0;
 
     if (promises.length === 0)
-        progress(100);
+        progress(100, d, promises.length);
     else {
-        progress(0);
+        progress(0, d, promises.length);
         for (const p of promises) {
             p.finally(() => {
                 d++;
-                progress((d * 100) / promises.length);
+                progress(((d * 100) / promises.length), d, promises.length);
             });
         }
     }
