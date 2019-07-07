@@ -2,17 +2,20 @@ import {
     ContainerBuilder
 } from 'node-dependency-injection'
 import fileReader from './utils/fileReader';
+import fileWriter from './utils/fileWriter';
 import csvReader from './utils/csvReader';
+import csvWriter from './utils/csvWriter';
 import scraperFactory from './utils/scraperFactory';
 import drScraper from './utils/drScraper';
 import idefixScraper from './utils/idefixScraper';
-var program = require('commander');
+const program = require('commander');
 
 program
     .version('0.1.0')
     .option('-i, --inputfile [file]', 'Input CSV File')
     .option('-l, --limit <n>', 'How many records should be read', parseInt)
     .option('-o, --offset <n>', 'How many records should be skipped', parseInt)
+    .option('-f, --outputfile [file]', 'Output CSV File')
     .parse(process.argv);
 
 try {
@@ -20,6 +23,7 @@ try {
         throw new Error("You have to specify a CSV file to read books.");
 
     var fReader = getFileReader();
+    var fWriter = getFileWriter();
     var scrapFac = createScraperFactory();
 
     fReader.readAsync()
@@ -32,20 +36,24 @@ try {
                 else if (book.title || book.isbn13) {
                     var scraper = scrapFac.get(book);
                     promises.push(scraper.completeBookAsync()
-                    .then(book => {
-                        console.log(book);
-                    }));
+                        .then(book => {
+                            fWriter.append(book);
+                        }));
                 }
             }
             return reportProgress(promises,
-                (percent, completedRecords, totalRecords) => {
-                    console.log(`${completedRecords}/${totalRecords} %${percent.toFixed(2)} completed...`);
-                });
+                    (percent, completedRecords, totalRecords) => {
+                        console.log(`${completedRecords}/${totalRecords} %${percent.toFixed(2)} completed...`);
+                    })
+                .catch(e => {
+                    throw e;
+                })
+                .then(() => fWriter.writeToFileAsync())
+                .then(() => console.log(`Output file is generated: ${program.outputfile}`));
         })
         .catch(e => {
             throw e;
-        });
-
+        })
 } catch (error) {
     console.error(error);
     process.exit(1);
@@ -59,6 +67,16 @@ function getFileReader() {
         .addArgument(new csvReader(program.inputfile, program.limit, program.offset))
 
     return container.get('fileReader')._readerService;
+}
+
+function getFileWriter() {
+    let container = new ContainerBuilder()
+
+    container
+        .register('fileWriter', fileWriter)
+        .addArgument(new csvWriter(program.outputfile))
+
+    return container.get('fileWriter')._writerService;
 }
 
 function createScraperFactory() {

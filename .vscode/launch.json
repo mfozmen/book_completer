@@ -3,13 +3,11 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\lib\\index.js",
-            "args": ["-i","input/books.csv", "-l","10","-o","0"]
-        }
-    ]
+    "configurations": [{
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Program",
+        "program": "${workspaceFolder}\\lib\\index.js",
+        "args": ["-i", "input/books.csv", "-l", "3", "-o", "7", "-f", "output/books.csv"]
+    }]
 }
