@@ -50,7 +50,7 @@ function getFileReader() {
 function createScraperFactory() {
     var sf = new scraperFactory();
     sf.register(drScraper);
-    sf.register(idefixScraper);
+    // sf.register(idefixScraper);
 
     return sf;
 }

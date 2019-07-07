@@ -1,28 +1,66 @@
+import request from 'request';
+
 class scraper {
     constructor(book) {
+        this.requestTimeout = 60000;
         this.book = book;
+        this.siteUrl = '';
+        this.searchUrl = '';
     }
 
     completeBookAsync() {
         return new Promise(function (resolve, reject) {
-            try {
-                var completedBook = this.completeBook()
-                resolve(completedBook);
-            } catch (e) {
-                reject(e);
-            }
-
+            this.searchAsync()
+                .then(body => this.parseDetailsUrl(body))
+                .then(detailsUrl => this.getDetailsPageAsync(detailsUrl))
+                .then(detailsPage => this.parseBook(detailsPage))
+                .then(book => {
+                    this.copyProperties(book);
+                })
+                .catch(e => reject(e));
         }.bind(this));
     }
 
-    completeBook(){
-        var detailsUrl;
-        if (this.book.title)
-            detailsUrl = this.searchByTitle(this.book.title);
+    searchAsync() {
+        return new Promise(function (resolve, reject) {
+            var uri;
+            if (this.book.title)
+                uri = encodeURI(`${this.searchUrl}${this.book.title}`);
+
+            if (uri) {
+                request(uri, {
+                    timeout: this.requestTimeout
+                }, (err, _response, body) => {
+                    if (err)
+                        reject(err);
+                    else
+                        resolve(body);
+                });
+            } else
+                reject('No Uri');
+        }.bind(this));
     }
 
-    searchByTitle(title){
-        
+    getDetailsPageAsync(detailsUrl) {
+        return new Promise(function (resolve, reject) {
+            request(detailsUrl, {
+                timeout: this.requestTimeout
+            }, (err, _response, body) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(body);
+            });
+        }.bind(this));
+    }
+
+    copyProperties(book) {
+        for (let i = 0; i < Object.keys(this.book).length; i++) {
+            const prop = Object.keys(this.book)[i];
+            if (book[prop] !== this.book[prop])
+                this.book[prop] = book[prop];
+        }
+        this.book.imagePath = book.imagePath;
     }
 }
 

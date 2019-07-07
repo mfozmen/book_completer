@@ -21,7 +21,9 @@
   "dependencies": {
     "commander": "^2.20.0",
     "csvtojson": "^2.0.10",
-    "node-dependency-injection": "^2.3.5"
+    "node-dependency-injection": "^2.3.5",
+    "node-html-parser": "^1.1.16",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
